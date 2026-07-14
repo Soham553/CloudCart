@@ -53,8 +53,18 @@ async function initDb() {
         customer_name VARCHAR(100) NOT NULL,
         customer_email VARCHAR(100) NOT NULL,
         total_amount DECIMAL(10, 2) NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        status VARCHAR(50) DEFAULT 'pending',
+        progress INTEGER DEFAULT 0
       );
+    `);
+
+    // Ensure status and progress columns exist in existing database schemas
+    await client.query(`
+      ALTER TABLE orders ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'pending';
+    `);
+    await client.query(`
+      ALTER TABLE orders ADD COLUMN IF NOT EXISTS progress INTEGER DEFAULT 0;
     `);
 
     await client.query(`
